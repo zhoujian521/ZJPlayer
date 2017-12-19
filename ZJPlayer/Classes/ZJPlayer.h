@@ -32,21 +32,33 @@ typedef NS_ENUM (NSInteger, ZJPlayerResourceType){
 
 @end
 
-
+/**
+ 静音
+ */
 @interface ZJPlayer : NSObject
 
 @property (nonatomic, assign) id<ZJPlayerDelegate> delegate;
 //播放状态
 @property (nonatomic, assign, readonly) ZJPlayerState playerState;
+// 倍速
+@property (nonatomic, assign) float rate;
+// 静音控制
+@property (nonatomic, assign) BOOL muted;
+// 音量控制
+@property (nonatomic, assign) float volume;
 
 + (instancetype)shareManager;
-
+// 播放
 - (void)playingWithResource:(ZJPlayerResourceType )resource url:(NSURL *)url isCache:(BOOL)isCache;
-
+// 暂停
 - (void)pause;
-
-- (void)play;
-
+// 播放
+- (void)resume;
+// 停止
 - (void)stop;
+// 快进【x】s
+- (void)seekWithTimeInterval:(NSTimeInterval)timeInterval;
+//【x】倍速播放
+- (void)seekToProgress:(float)progress;
 
 @end

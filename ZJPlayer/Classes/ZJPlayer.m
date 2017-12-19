@@ -36,6 +36,80 @@ static ZJPlayer *_manager = nil;
     return _manager;
 }
 
+- (void)pause{
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    if (!self.player) return;
+    [self.player pause];
+}
+
+- (void)resume{
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    //默认情况下扬声器播放
+    [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [audioSession setActive:YES error:nil];
+    
+    if (!self.player) {
+        [self setPlayerWithUrl:self.url];
+        return;
+    }
+    [self.player play];
+}
+
+- (void)stop{
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    
+    [self.playerItem removeObserver:self forKeyPath:@"status"];
+    [self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+    [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [self.playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+    
+    [self.player removeObserver:self forKeyPath:@"rate"];
+    [self.player removeTimeObserver:_playbackTimerObserver];
+    
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemPlaybackStalledNotification object:nil];
+    
+    if (!self.player) return;
+    [self.player pause];
+    
+    self.urlAsset = nil;
+    self.playerItem = nil;
+    self.player = nil;
+    self.playerState = ZJPlayerStatusUnknown;
+}
+
+// 快进【x】s
+- (void)seekWithTimeInterval:(NSTimeInterval)timeInterval{
+    NSTimeInterval seconds = CMTimeGetSeconds(self.player.currentItem.currentTime) +timeInterval;
+    [self.player seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
+        
+    }];
+}
+
+//【x】倍速播放
+- (void)seekToProgress:(float)progress{
+    NSTimeInterval seconds = CMTimeGetSeconds(self.player.currentItem.duration) * progress;
+    [self.player seekToTime:CMTimeMakeWithSeconds(seconds, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
+        
+    }];
+    
+}
+
+- (void)setRate:(float)rate{
+    self.player.rate = rate;
+}
+
+- (void)setMuted:(BOOL)muted{
+    self.player.muted = muted;
+}
+
+- (void)setVolume:(float)volume{
+    if (volume > 0.0) {
+        self.muted = NO;
+    }
+    [self.player setVolume:volume];
+}
+
 - (void)playingWithResource:(ZJPlayerResourceType )resource url:(NSURL *)url isCache:(BOOL)isCache{
     if (isCache) return;   //暂时先不处理 缓存
     //远程资源
@@ -44,6 +118,11 @@ static ZJPlayer *_manager = nil;
 }
 
 - (void)setPlayerWithUrl:(NSURL *)url{
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    //默认情况下扬声器播放
+    [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [audioSession setActive:YES error:nil];
+    
     [self setUrlAssetWithUrl:url];
     [self addPeriodicTimeObserver];
     [self addKVOObserver];
@@ -153,6 +232,7 @@ static ZJPlayer *_manager = nil;
                 self.playerState = ZJPlayerStatusUnknown;
                 break;
             case AVPlayerItemStatusReadyToPlay:
+                [self.player play]; // 达到播放状态自动播放
                 if (self.playerState == ZJPlayerStatusReadyToPlay) return;
 //                NSLog(@"监听状态属性 AVPlayerItemStatusReadyToPlay");
                 self.playerState = ZJPlayerStatusReadyToPlay;
@@ -216,38 +296,7 @@ static ZJPlayer *_manager = nil;
 //    _lastTime = current;
 }
 
-- (void)pause{
-    if (!self.player) return;
-    [self.player pause];
-}
 
-- (void)play{
-    if (!self.player) {
-        [self setPlayerWithUrl:self.url];
-    }
-    [self.player play];
-}
-
-- (void)stop{
-    [self.playerItem removeObserver:self forKeyPath:@"status"];
-    [self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-    [self.playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-    [self.playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
-    
-    [self.player removeObserver:self forKeyPath:@"rate"];
-    [self.player removeTimeObserver:_playbackTimerObserver];
-    
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:[self.player currentItem]]; 
-    [[NSNotificationCenter defaultCenter]removeObserver:self name:AVPlayerItemPlaybackStalledNotification object:nil];
-
-    if (!self.player) return;
-    [self.player pause];
-    
-    self.urlAsset = nil;
-    self.playerItem = nil;
-    self.player = nil;
-    self.playerState = ZJPlayerStatusUnknown;
-}
 
 - (void)setPlayerState:(ZJPlayerState)playerState{
     _playerState = playerState;

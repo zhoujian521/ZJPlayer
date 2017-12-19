@@ -35,9 +35,9 @@
     [[ZJPlayer shareManager] playingWithResource:ZJPlayerResourceLocal url:url isCache:NO];
 }
 
-// 播放
+// 继续
 - (IBAction)play:(UIButton *)sender {
-     [[ZJPlayer shareManager] play];
+     [[ZJPlayer shareManager] resume];
 }
 
 // 暂停
@@ -49,6 +49,34 @@
 - (IBAction)stop:(UIButton *)sender {
     [[ZJPlayer shareManager] stop];
 }
+
+// 2倍速播放
+- (IBAction)playingWith2Rate:(UIButton *)sender {
+    [ZJPlayer shareManager].rate = 2.0f;
+}
+
+// 静音
+- (IBAction)muted:(UIButton *)sender {
+    sender.selected = !sender.isSelected;
+    [ZJPlayer shareManager].muted = sender.isSelected;
+}
+
+// 快进xs
+- (IBAction)seekTimexs:(UIButton *)sender {
+    [[ZJPlayer shareManager] seekWithTimeInterval:15.0f];
+}
+
+- (IBAction)volume:(UISlider *)sender {
+     [ZJPlayer shareManager].volume = sender.value;
+    
+}
+
+- (IBAction)progress:(UISlider *)sender {
+   [[ZJPlayer shareManager] seekToProgress:sender.value];
+}
+
+
+
 
 - (void)audioPlayer:(ZJPlayer *)player playStateChanged:(ZJPlayerState)state{
     switch (state) {

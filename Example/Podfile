@@ -2,6 +2,7 @@ use_frameworks!
 
 target 'ZJPlayer_Example' do
   pod 'ZJPlayer', :path => '../'
+#  pod 'ZJPlayer', '~> 0.1.0'
 
   target 'ZJPlayer_Tests' do
     inherit! :search_paths

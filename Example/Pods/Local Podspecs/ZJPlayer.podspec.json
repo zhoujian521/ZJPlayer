@@ -1,15 +1,15 @@
 {
   "name": "ZJPlayer",
   "version": "0.1.0",
-  "summary": "A short description of ZJPlayer.",
-  "description": "TODO: Add long description of the pod here.",
+  "summary": "iOS对原生AVPlayer简单封装",
+  "description": "iOS对原生AVPlayer简单封装，【1：播放本地，原生音频】【播放】【暂停】【停止】",
   "homepage": "https://github.com/shuaijianjian/ZJPlayer",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "shuaijianjian": "zhoujianjian@channelsoft.com"
+    "ZJ": "zhoujianjian@channelsoft.com"
   },
   "source": {
     "git": "https://github.com/shuaijianjian/ZJPlayer.git",

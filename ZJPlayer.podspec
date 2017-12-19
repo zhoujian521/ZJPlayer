@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'ZJPlayer'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of ZJPlayer.'
+  s.summary          = 'iOS对原生AVPlayer简单封装'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,13 +18,13 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+  iOS对原生AVPlayer简单封装，【1：播放本地，原生音频】【播放】【暂停】【停止】
                        DESC
 
   s.homepage         = 'https://github.com/shuaijianjian/ZJPlayer'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'shuaijianjian' => 'zhoujianjian@channelsoft.com' }
+  s.author           = { 'ZJ' => 'zhoujianjian@channelsoft.com' }
   s.source           = { :git => 'https://github.com/shuaijianjian/ZJPlayer.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
